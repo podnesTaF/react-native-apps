@@ -1,0 +1,4 @@
+{
+  "plugins": ["./node_modules/prettier-plugin-unused"],
+  "printWidth": 80
+}
