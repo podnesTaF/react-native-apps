@@ -2,6 +2,9 @@ import {TextInput, View, StyleSheet, Alert} from "react-native";
 import PrimaryButton from "../components/UI/PrimaryButton";
 import {useState} from "react";
 import Colors from "../constants/colors";
+import Title from "../components/UI/Title";
+import Card from "../components/UI/Card";
+import InstructionText from "../components/UI/InstructionText";
 
 const StartGameScreen = ({handlePicked}) => {
     const [enteredValue, setEnteredValue] = useState('')
@@ -20,41 +23,39 @@ const StartGameScreen = ({handlePicked}) => {
             setEnteredValue('')
         }    }
     return (
-        <View style={styles.inputContainer}>
-              <TextInput onChangeText={(text) => setEnteredValue(text)}
-                         value={enteredValue}
-                         keyboardType={'number-pad'}
-                         autoCapitalize={'none'}
-                         autoCorrect={false}
-                         style={styles.numberInput}
-                         maxLength={2}
-              />
-            <View style={styles.buttonContainer}>
-                <PrimaryButton onPress={() => setEnteredValue('')}>
-                    Reset
-                </PrimaryButton>
-                <PrimaryButton onPress={confirmInputHandler}>
-                    Confirm
-                </PrimaryButton>
-            </View>
+        <View style={styles.rootContainer}>
+            <Title>Start a new game!</Title>
+            <Card>
+                <InstructionText style={styles.instructions}>Enter a number</InstructionText>
+                <TextInput onChangeText={(text) => setEnteredValue(text)}
+                           value={enteredValue}
+                           keyboardType={'number-pad'}
+                           autoCapitalize={'none'}
+                           autoCorrect={false}
+                           style={styles.numberInput}
+                           maxLength={2}
+                />
+                <View style={styles.buttonContainer}>
+                    <PrimaryButton onPress={() => setEnteredValue('')}>
+                        Reset
+                    </PrimaryButton>
+                    <PrimaryButton onPress={confirmInputHandler}>
+                        Confirm
+                    </PrimaryButton>
+                </View>
+            </Card>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    inputContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 16,
-        marginHorizontal: 24,
-        borderRadius: 10,
+    rootContainer: {
+        flex: 1,
         marginTop: 100,
-        backgroundColor: Colors.primary800,
-        elevation: 8,
-        shadowColor: '#000',
-        shadowOffset: { width: 4, height: 4 },
-        shadowRadius: 10,
-        shadowOpacity: 0.5,
+        alignItems: 'center',
+    },
+    instructions: {
+    marginBottom: 12,
     },
     numberInput: {
         height: 50,
