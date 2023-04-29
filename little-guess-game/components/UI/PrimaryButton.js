@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
         width: '48%',
     },
     buttonInner: {
-        backgroundColor: Colors.primary,
+        backgroundColor: Colors.primary500,
         paddingVertical: 8,
         paddingHorizontal: 16,
         elevation: 4
