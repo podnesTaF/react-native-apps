@@ -1,12 +1,14 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react';
-import {Text, View, StyleSheet} from "react-native";
+import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
+import {Text, View, StyleSheet, TextInput} from "react-native";
 import IconButton from "../components/UI/IconButton";
 import {GlobalStyles} from "../constants/styles";
 import CustomButton from "../components/UI/CustomButton";
+import {ExpensesContext} from "../store/store";
 
 const ManageExpenses = ({route, navigation}) => {
     const id = route.params?.expenseId;
     const isEdit = !!id;
+    const expensesCtx = useContext(ExpensesContext)
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -15,18 +17,27 @@ const ManageExpenses = ({route, navigation}) => {
     }, [navigation, isEdit  ])
 
     const deleteExpense = () => {
-
+        expensesCtx.deleteExpense(id)
+        navigation.goBack()
     }
 
     const cancelHandler = () => {
+        navigation.goBack()
+    }
 
+    const updateHandler = () => {
+        if(isEdit) {
+            expensesCtx.updateExpense(id, {title: 'text', amount: 99, date: new Date()})
+        }
+        navigation.goBack()
     }
 
     return (
         <View style={styles.container}>
+            <TextInput />
             <View style={styles.buttons}>
                 <CustomButton style={styles.button} mode={'flat'} onPress={cancelHandler}>Cancel</CustomButton>
-                <CustomButton style={styles.button} >{isEdit ? 'Update' : 'Add'}</CustomButton>
+                <CustomButton style={styles.button} onPress={updateHandler} >{isEdit ? 'Update' : 'Add'}</CustomButton>
             </View>
             {isEdit && (
                 <View style={styles.deleteButton}>
