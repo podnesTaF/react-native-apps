@@ -4,6 +4,7 @@ import IconButton from "../components/UI/IconButton";
 import {GlobalStyles} from "../constants/styles";
 import CustomButton from "../components/UI/CustomButton";
 import {ExpensesContext} from "../store/store";
+import ExpenseForm from "../components/ManageExpense/ExpenseForm";
 
 const ManageExpenses = ({route, navigation}) => {
     const id = route.params?.expenseId;
@@ -25,20 +26,18 @@ const ManageExpenses = ({route, navigation}) => {
         navigation.goBack()
     }
 
-    const updateHandler = () => {
+    const confirmHandler = (data) => {
         if(isEdit) {
-            expensesCtx.updateExpense(id, {title: 'text', amount: 99, date: new Date()})
+            expensesCtx.updateExpense(id, data)
+        } else {
+            expensesCtx.addExpense(data)
         }
         navigation.goBack()
     }
 
     return (
         <View style={styles.container}>
-            <TextInput />
-            <View style={styles.buttons}>
-                <CustomButton style={styles.button} mode={'flat'} onPress={cancelHandler}>Cancel</CustomButton>
-                <CustomButton style={styles.button} onPress={updateHandler} >{isEdit ? 'Update' : 'Add'}</CustomButton>
-            </View>
+            <ExpenseForm onCancel={cancelHandler} submitBtnLabel={isEdit ? 'Update' : 'Add'} oldValues={expensesCtx.expenses?.find(v => v.id === id)} onSubmit={confirmHandler} />
             {isEdit && (
                 <View style={styles.deleteButton}>
                     <IconButton name={'trash'} size={36} color={GlobalStyles.colors.error500} onPress={deleteExpense} />
@@ -53,15 +52,6 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 24,
         backgroundColor: GlobalStyles.colors.primary800,
-    },
-    buttons: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    button: {
-        minWidth: 120,
-        marginHorizontal: 8,
     },
     deleteButton: {
         marginTop: 16,
