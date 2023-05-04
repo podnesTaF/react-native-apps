@@ -5,9 +5,13 @@ import {GlobalStyles} from "../constants/styles";
 import CustomButton from "../components/UI/CustomButton";
 import {ExpensesContext} from "../store/store";
 import ExpenseForm from "../components/ManageExpense/ExpenseForm";
+import axios from "axios";
+import {deleteExpense, storeExpense, updateExpense} from "../util/http";
+import LoadingOverlay from "../components/UI/LoadingOverlay";
 
 const ManageExpenses = ({route, navigation}) => {
     const id = route.params?.expenseId;
+    const [isFetching, setIsFetching] = useState(false)
     const isEdit = !!id;
     const expensesCtx = useContext(ExpensesContext)
 
@@ -17,8 +21,11 @@ const ManageExpenses = ({route, navigation}) => {
         })
     }, [navigation, isEdit  ])
 
-    const deleteExpense = () => {
+    const deleteExpense = async () => {
         expensesCtx.deleteExpense(id)
+        setIsFetching(true)
+        await deleteExpense(id)
+        setIsFetching(false)
         navigation.goBack()
     }
 
@@ -26,22 +33,32 @@ const ManageExpenses = ({route, navigation}) => {
         navigation.goBack()
     }
 
-    const confirmHandler = (data) => {
+    const confirmHandler = async (data) => {
         if(isEdit) {
             expensesCtx.updateExpense(id, data)
+            setIsFetching(true)
+            await updateExpense(id, data)
+            setIsFetching(false)
         } else {
-            expensesCtx.addExpense(data)
+            setIsFetching(true)
+            const expenseId = await storeExpense(data)
+            setIsFetching(false)
+            expensesCtx.addExpense({...data, id: expenseId})
         }
         navigation.goBack()
     }
 
     return (
         <View style={styles.container}>
-            <ExpenseForm onCancel={cancelHandler} submitBtnLabel={isEdit ? 'Update' : 'Add'} oldValues={expensesCtx.expenses?.find(v => v.id === id)} onSubmit={confirmHandler} />
-            {isEdit && (
-                <View style={styles.deleteButton}>
-                    <IconButton name={'trash'} size={36} color={GlobalStyles.colors.error500} onPress={deleteExpense} />
-                </View>
+            {isFetching ? <LoadingOverlay /> : (
+                <>
+                    <ExpenseForm onCancel={cancelHandler} submitBtnLabel={isEdit ? 'Update' : 'Add'} oldValues={expensesCtx.expenses?.find(v => v.id === id)} onSubmit={confirmHandler} />
+                    {isEdit && (
+                        <View style={styles.deleteButton}>
+                            <IconButton name={'trash'} size={36} color={GlobalStyles.colors.error500} onPress={deleteExpense} />
+                        </View>
+                    )}
+                </>
             )}
         </View>
     );
