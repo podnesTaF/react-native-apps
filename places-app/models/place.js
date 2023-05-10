@@ -1,6 +1,6 @@
 export class Place {
-    constructor(title, imageUri, address, location) {
-        this.id = new Date().toString() + Math.random().toString();
+    constructor(title, imageUri, address, location, id) {
+        this.id = id
         this.title = title;
         this.imageUri = imageUri;
         this.address = location.address;

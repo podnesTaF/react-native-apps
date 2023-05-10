@@ -8,7 +8,7 @@ export const getAddress = async (lat, lng) => {
     try {
         const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${googleApiKey}`)
         const data = await res.json()
-        if(data.results) {
+        if(data.results.length) {
             return data.results[0].formatted_address
         }
     } catch (e) {
